@@ -60,8 +60,8 @@ const insertData = (data) =>{
 // }
 
 const update = (id, data) =>{
-    const {name,brand,condition,description,stock,id_category,price} = data
-    return pool.query(`UPDATE products SET name='${name}', brand='${brand}', condition='${condition}', description='${description}', stock=${stock}, id_category=${id_category}, price=${price} WHERE id=${id}`)
+    const {name,brand,condition,description,stock,id_category,price,photo} = data
+    return pool.query(`UPDATE products SET name='${name}', brand='${brand}', condition='${condition}', description='${description}', stock=${stock}, id_category=${id_category}, price=${price}, photo=${photo} WHERE id=${id}`)
 }
 
 // const updateData = ({id, name, description, stock, price}) =>{

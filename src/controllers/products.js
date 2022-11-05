@@ -1,7 +1,14 @@
 /* eslint-disable no-undef */
 const productModel = require('../models/products')
-const commonHelper = require('../helper/common')
+const commonHelper = require('../helpers/common')
+const cloudinary = require('cloudinary').v2
 // const client = require('../configs/redis')
+
+cloudinary.config({ 
+  cloud_name: 'ddpo9zxts', 
+  api_key: '713177134711193', 
+  api_secret: 'LPrYJjwuotkDzsvBwCDlsUoIycw' 
+});
 
     exports.getData = async(req,res,next) =>{
       try {
@@ -69,9 +76,9 @@ const commonHelper = require('../helper/common')
     exports.insertProduct = async(req,res) =>{
       try {
         const {name,brand,condition,description,stock,id_category,price} = req.body
-        console.log(req.body);
         const photo = req.file
-        const data = {name,brand,condition,description,stock,id_category,price,photo}
+        const image = await cloudinary.uploader.upload(photo.path, { folder: 'Backend Blanja/products' })
+        const data = {name,brand,condition,description,stock,id_category,price,photo: [image.secure_url]}
         await productModel.insertData(data)
         return commonHelper.response(res, data, 'sucess', 200, 'Add data sucess')
       } catch (error) {
@@ -108,14 +115,20 @@ const commonHelper = require('../helper/common')
     //     // res.json({status: 200, message: 'data berhasil di tambahkan', data: data})
     // },
 
-    exports.update = (req, res) => {
+    exports.update = async(req, res) => {
       try {
+          const id = req.params.id
           const {name,brand,condition,description,stock,id_category,price} = req.body
-          const data = {name,brand,condition,description,stock,id_category,price} 
-          productModel.update(req.params.id, data)
+          let pics = req.file.path
+          const image = await cloudinary.uploader.upload(pics, { folder: 'Backend Blanja/products' })
+          // console.log(req.file);
+          // const pics = await cloudinary.uploader.upload(photo.path, { folder: 'Backend Blanja/products' })
+          const data = {name,brand,condition,description,stock,id_category,price,photo: image.url} 
+          productModel.update(id, data)
             return commonHelper.response(res, data, 'success', 200, 'data updated')
         } catch (error) {
-            res.send({message: 'error', error})
+          console.log(error);
+            // res.send({message: 'error', error})
         }
       },
 
@@ -135,7 +148,7 @@ const commonHelper = require('../helper/common')
     exports.delete = (req,res, next) =>{
         productModel.deleteData(req.params.id)
         .then((result)=>{
-            commonHelper.response(res,result.command,203,'delete data success')
+          return commonHelper.response(res, null, 'sucess', 203, 'Add data sucess')
         })
         .catch((error)=>{
             next(error)

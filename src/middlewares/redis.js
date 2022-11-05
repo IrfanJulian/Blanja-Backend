@@ -1,5 +1,5 @@
 const client = require('../configs/redis')
-const {response} = require('../helper/common')
+const {response} = require('../helpers/common')
 
 const hitCache = async(req,res,next) => {
     const data = await client.get(`product`)

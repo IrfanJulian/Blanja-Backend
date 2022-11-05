@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 const userModel = require('../models/user')
 const {v4: uuidv4} = require('uuid')
-const commonHelper = require('../helper/common')
+const commonHelper = require('../helpers/common')
 const bcrypt = require('bcryptjs')
-const { generateToken, generateRefreshToken } = require('../helper/auth')
+const { generateToken, generateRefreshToken } = require('../helpers/auth')
 
 exports.getData = async(req,res) =>{
     try {
@@ -89,7 +89,8 @@ exports.login = async (req,res) => {
     }
     let payload = {
         email: dataUser.email,
-        password: dataUser.password
+        password: dataUser.password,
+        role: dataUser.role
     }
         dataUser.token = generateToken(payload)
         dataUser.refreshToken= generateRefreshToken(payload)

@@ -1,4 +1,4 @@
-const {response} = require('../helper/common')
+const {response} = require('../helpers/common')
 const jwt = require('jsonwebtoken')
 // eslint-disable-next-line no-undef
 let key = process.env.JWT_KEY
@@ -8,18 +8,38 @@ const seller = (req,res,next) =>{
         let auth = req.headers.authorization
         token = auth.split(" ")[1]
         let decode = jwt.verify(token,key)
-        req.payload = decode.role
-        if(req.payload !== seller){
-            return response(res, null, 'failed', 404, 'Just Seller can process this')
+        let dataRole = decode.role
+        // console.log(dataRole);
+        if(dataRole !== 'seller'){
+            return response(res, null, 'failed', 404, 'Just Seller can process')
         }
         return next()
 }
 
 const user = (req,res,next) =>{
-    if(req.params.role == 'user'){
+    let token
+        let auth = req.headers.authorization
+        token = auth.split(" ")[1]
+        let decode = jwt.verify(token,key)
+        let dataRole = decode.role
+        console.log(dataRole);
+        if(dataRole !== 'user'){
+            return response(res, null, 'failed', 404, 'Just User can process')
+        }
         return next()
-    }
-    return response(res, null, 'failed', 404, 'Just User can Proses')
+}
+
+const admin = (req,res,next) =>{
+    let token
+        let auth = req.headers.authorization
+        token = auth.split(" ")[1]
+        let decode = jwt.verify(token,key)
+        let dataRole = decode.role
+        console.log(dataRole);
+        if(dataRole !== 'admin'){
+            return response(res, null, 'failed', 404, 'Just admin can process')
+        }
+        return next()
 }
 
 const protect = (req,res,next) =>{
@@ -49,5 +69,6 @@ const protect = (req,res,next) =>{
 module.exports = {
     seller,
     user,
-    protect
+    protect,
+    admin
 }

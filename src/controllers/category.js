@@ -1,5 +1,5 @@
 const categoryModel = require('../models/category')
-const commonHelper = require('../helper/common')
+const commonHelper = require('../helpers/common')
 
 exports.get = async (req,res) =>{
     try {
