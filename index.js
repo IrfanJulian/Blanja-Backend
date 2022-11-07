@@ -15,7 +15,10 @@ const fileupload = require('express-fileupload');
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
-app.use(fileupload({useTempFiles: true}))
+app.use(fileupload({ 
+  useTempFiles : true,
+  tempFileDir : './upload'
+}))
 app.use(helmet())
 app.use(xss())
 app.use(cors(myCors))
