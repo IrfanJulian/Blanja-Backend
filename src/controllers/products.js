@@ -1,14 +1,14 @@
 /* eslint-disable no-undef */
 const productModel = require('../models/products')
 const commonHelper = require('../helpers/common')
-const cloudinary = require('cloudinary').v2
+// const cloudinary = require('cloudinary').v2
 // const client = require('../configs/redis')
 
-cloudinary.config({ 
-  cloud_name: 'ddpo9zxts', 
-  api_key: '713177134711193', 
-  api_secret: 'LPrYJjwuotkDzsvBwCDlsUoIycw' 
-});
+// cloudinary.config({ 
+//   cloud_name: 'ddpo9zxts', 
+//   api_key: '713177134711193', 
+//   api_secret: 'LPrYJjwuotkDzsvBwCDlsUoIycw' 
+// });
 
     exports.getData = async(req,res,next) =>{
       try {
@@ -73,13 +73,14 @@ cloudinary.config({
     // },
 
 
-    exports.insertProduct = async(req,res) =>{
+    exports.insertProduct = (req,res) =>{
       try {
         const {name,brand,condition,description,stock,id_category,price} = req.body
         const photo = req.file
-        const image = await cloudinary.uploader.upload(photo.path, { folder: 'Backend Blanja/products' })
-        const data = {name,brand,condition,description,stock,id_category,price,photo: [image.secure_url]}
-        await productModel.insertData(data)
+        // const image = await cloudinary.uploader.upload(photo.path, { folder: 'Backend Blanja/products' })
+        // const data = {name,brand,condition,description,stock,id_category,price,photo: [image.secure_url]}
+        const data = {name,brand,condition,description,stock,id_category,price,photo}
+        productModel.insertData(data)
         return commonHelper.response(res, data, 'sucess', 200, 'Add data sucess')
       } catch (error) {
         res.send({message: 'error', error})
