@@ -24,7 +24,7 @@ ALTER TABLE products ADD price INT DEFAULT 0;
 
 CREATE TABLE category(id SERIAL PRIMARY KEY, name VARCHAR(64) NOT NULL);
 
-CREATE TABLE transactions(id SERIAL PRIMARY KEY, id_product INT NOT NULL, id_user INT NOT NULL, amount INT DEFAULT 0, price INT DEFAULT 0, total INT DEFAULT 0)
+CREATE TABLE transactions(id SERIAL PRIMARY KEY, id_product INT NOT NULL, id_user INT NOT NULL, amount INT DEFAULT 0, price INT DEFAULT 0, total INT DEFAULT 0);
 
 CREATE TABLE users(id SERIAL, FullName VARCHAR (64), email VARCHAR (64) NOT NULL, role VARCHAR (16), password VARCHAR (64) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, update_at TIMESTAMP, PRIMARY KEY (id));
 
@@ -43,6 +43,8 @@ ALTER TABLE users ADD gender VARCHAR(64);
 INSERT INTO users(fullname, email, role, password, phone_number, gender)VALUES('Muthia', 'muthia@id.id', 'admin', 'abcaa', 612345679, 'female');
 
 CREATE TABLE users(id VARCHAR PRIMARY KEY, name VARCHAR NOT NULL, email VARCHAR NOT NULL, password VARCHAR NOT NULL, role VARCHAR NOT NULL, phone VARCHAR NOT NULL, gender VARCHAR NOT NULL);
+
+CREATE TABLE products(id SERIAL PRIMARY KEY, name VARCHAR NOT NULL, brand VARCHAR, condition VARCHAR, description VARCHAR, stock INT DEFAULT 0, id_category INT NOT NULL, price INT DEFAULT 0, photo VARCHAR);
 
 INSERT INTO users(id, name, email, password, role, phone, gender)VALUES(1, 'irfan', 'irfan@id.id', 'asdqwe', 'admin', '0812345678', 'male');
 

@@ -72,6 +72,7 @@ exports.insertData = async(req, res) =>{
             res.send({message: 'email is already exist'})
         }
     } catch (error) {
+        console.log(error)
         res.send({message: 'error'})
     }
 }
