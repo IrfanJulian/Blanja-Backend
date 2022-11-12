@@ -4,6 +4,15 @@ const {v4: uuidv4} = require('uuid')
 const commonHelper = require('../helpers/common')
 const bcrypt = require('bcryptjs')
 const { generateToken, generateRefreshToken } = require('../helpers/auth')
+const cloudinary = require('cloudinary').v2
+// const client = require('../configs/redis')
+
+cloudinary.config({ 
+  cloud_name: 'ddpo9zxts', 
+  api_key: '713177134711193', 
+  api_secret: 'LPrYJjwuotkDzsvBwCDlsUoIycw' 
+});
+
 
 exports.getData = async(req,res) =>{
     try {
@@ -49,9 +58,25 @@ exports.getData = async(req,res) =>{
 //     })
 // }
 
+// exports.insertProduct = async(req,res) =>{
+//     try {
+//       const {name,brand,condition,description,stock,id_category,price} = req.body
+//       const photo = req.file
+//       const image = await cloudinary.uploader.upload(photo.path, { folder: 'Backend Blanja/products' })
+//       const data = {name,brand,condition,description,stock,id_category,price,photo: [image.secure_url]}
+//       await productModel.insertData(data)
+//       return commonHelper.response(res, data, 'sucess', 200, 'Add data sucess')
+//     } catch (error) {
+//       res.send({message: 'error', error})
+//     }
+//   }
+
 exports.insertData = async(req, res) =>{
     try {
         const {name, email, role, password, phone, gender} = req.body
+        const photo = req.file
+        const image = await cloudinary.uploader.upload(photo.path, { folder: 'Backend Blanja/user' })
+        // const data = { name, email, password, phone, gender, photo: [image.secure_url] }
         const dataUser = await userModel.findByEmail(email)
         const salt = bcrypt.genSaltSync(10);
         const passwordHash = bcrypt.hashSync(password, salt);
@@ -64,7 +89,8 @@ exports.insertData = async(req, res) =>{
                 role,
                 password: passwordHash,
                 phone,
-                gender
+                gender,
+                photo: [image.secure_url]
             }
             await userModel.insertData(data)
             res.send({status: 200, message: 'add data success'})

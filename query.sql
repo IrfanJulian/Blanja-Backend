@@ -51,3 +51,11 @@ INSERT INTO users(id, name, email, password, role, phone, gender)VALUES(1, 'irfa
 INSERT INTO products(name,brand,condition,description,stock,id_category,price,photo)VALUES('hoodie','347','New','New product from 347',30,3,240000,'PhotoHood13');
 
 ALTER TABLE products ADD photo VARCHAR;
+
+CREATE TABLE products(id SERIAL PRIMARY KEY, name VARCHAR NOT NULL, brand VARCHAR, condition VARCHAR, description VARCHAR, stock INT DEFAULT 0, id_category INT NOT NULL, price INT DEFAULT 0, photo VARCHAR);
+
+CREATE TABLE category(id SERIAL PRIMARY KEY, name VARCHAR(64) NOT NULL);
+
+CREATE TABLE users(id VARCHAR PRIMARY KEY, name VARCHAR NOT NULL, email VARCHAR NOT NULL, password VARCHAR NOT NULL, role VARCHAR NOT NULL, phone VARCHAR NOT NULL, gender VARCHAR NOT NULL, photo VARCHAR);
+
+CREATE TABLE transactions(id SERIAL PRIMARY KEY, id_product INT NOT NULL, id_user INT NOT NULL, amount INT DEFAULT 0, price INT DEFAULT 0, total INT DEFAULT 0);
