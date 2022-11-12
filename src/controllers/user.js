@@ -75,6 +75,7 @@ exports.insertData = async(req, res) =>{
     try {
         const {name, email, role, password, phone, gender} = req.body
         const photo = req.file
+        console.log(req.file);
         const image = await cloudinary.uploader.upload(photo.path, { folder: 'Backend Blanja/user' })
         // const data = { name, email, password, phone, gender, photo: [image.secure_url] }
         const dataUser = await userModel.findByEmail(email)
@@ -93,6 +94,7 @@ exports.insertData = async(req, res) =>{
                 photo: [image.secure_url]
             }
             await userModel.insertData(data)
+            console.log(data);
             res.send({status: 200, message: 'add data success'})
         }else{
             res.send({message: 'email is already exist'})
