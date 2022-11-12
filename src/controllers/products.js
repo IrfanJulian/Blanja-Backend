@@ -76,12 +76,28 @@ cloudinary.config({
     exports.insertProduct = async(req,res) =>{
       try {
         const {name,brand,condition,description,stock,id_category,price} = req.body
-        const photo = req.file
-        const image = await cloudinary.uploader.upload(photo.path, { folder: 'Backend Blanja/products' })
-        const data = {name,brand,condition,description,stock,id_category,price,photo: [image.secure_url]}
+        const images = req.files.photo
+        // console.log(images);
+        let poto = []
+        if(req.files.photo){
+          const image = await Promise.all(
+            images.map(async(item)=>{
+              poto.push(await cloudinary.uploader.upload(item.path, { folder: 'Backend Blanja/products' }))
+            })
+          )
+          // console.log(image);
+          // console.log('============================================================');
+          const pics = poto.map((item)=>{
+            // console.log(item);
+            return item.secure_url
+          })
+        } 
+        // console.log(pics);
+        const data = {name,brand,condition,description,stock,id_category,price,images: req.files.photo ? JSON.stringify(pics).replace('[', '{').replace(']', '}') : false }
         await productModel.insertData(data)
         return commonHelper.response(res, data, 'sucess', 200, 'Add data sucess')
       } catch (error) {
+        console.log(error);
         res.send({message: 'error', error})
       }
     }
