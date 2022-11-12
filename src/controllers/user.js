@@ -93,7 +93,7 @@ exports.insertData = async(req, res) =>{
                 gender,
                 photo: [image.secure_url]
             }
-            await userModel.insertData(data)
+            // await userModel.insertData(data)
             console.log(data);
             res.send({status: 200, message: 'add data success'})
         }else{
