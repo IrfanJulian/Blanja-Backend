@@ -14,8 +14,8 @@ const insertData = (data) =>{
 }
 
 const updateData = (id, data) =>{
-    const {name, email, role, password, phone, gender} = data
-    return pool.query(`UPDATE users SET name='${name}', email='${email}', role='${role}', password='${password}', ${phone}, '${gender}' WHERE id=${id}`)
+    const {name, email, role, password, phone, gender, photo} = data
+    return pool.query(`UPDATE users SET name='${name}', email='${email}', role='${role}', password='${password}', phone=${phone}, gender='${gender}', photo='${photo}' WHERE id=${id}`)
 }
 
 const deleteData = (id) =>{
