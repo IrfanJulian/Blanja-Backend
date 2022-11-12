@@ -10,7 +10,7 @@ const findByEmail = (email) =>{
 
 const insertData = (data) =>{
     const {id, name, email, password, role, phone, gender, photo} = data
-    return pool.query(`INSERT INTO users(id, name, email, password, role, phone, gender, photo)VALUES('${id}', '${name}', '${email}', '${password}', '${role}', ${phone}, '${gender}'), '${photo}'`)
+    return pool.query(`INSERT INTO users(id, name, email, password, role, phone, gender, photo)VALUES('${id}', '${name}', '${email}', '${password}', '${role}', ${phone}, '${gender}', '${photo}')`)
 }
 
 const updateData = (id, data) =>{
