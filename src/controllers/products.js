@@ -72,7 +72,6 @@ cloudinary.config({
     //     }
     // },
 
-
     exports.insertProduct = async(req,res) =>{
       try {
         const {name,brand,condition,description,stock,id_category,price} = req.body
@@ -87,11 +86,12 @@ cloudinary.config({
           )
           // console.log(image);
           // console.log('============================================================');
-          const pics = poto.map((item)=>{
-            // console.log(item);
-            return item.secure_url
-          })
         } 
+ 
+        const pics = poto.map((item)=>{
+          console.log(item);
+          return item.secure_url
+        })
         // console.log(pics);
         const data = {name,brand,condition,description,stock,id_category,price,images: req.files.photo ? JSON.stringify(pics).replace('[', '{').replace(']', '}') : false }
         await productModel.insertData(data)
