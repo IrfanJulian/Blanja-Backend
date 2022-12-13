@@ -26,7 +26,7 @@ exports.getData = async(req,res) =>{
 exports.insertData = async(req, res) =>{
         try {
             const { name, email, role, password } = req.body
-            console.log(req.body);
+            // console.log(req.body);
             // const image = await cloudinary.uploader.upload(photo.path, { folder: 'Recipes/User' })
                 const salt = bcrypt.genSaltSync(10);
                 const passwordHash = bcrypt.hashSync(password, salt);
@@ -46,9 +46,9 @@ exports.insertData = async(req, res) =>{
 
 exports.login = async(req,res) => {
     const {email, password} = req.body
-    console.log(req.body);
+    // console.log(req.body);
     const {rows: [dataUser]} = await userModel.findByEmail(email)
-    console.log(dataUser);
+    // console.log(dataUser);
     if(!dataUser){
         return commonHelper.response(res, null, 'failed', 403, 'login failed! register')
     }
