@@ -1,65 +1,26 @@
-const {response} = require('../helpers/common')
 const jwt = require('jsonwebtoken')
+const { response } = require('../helpers/common')
 // eslint-disable-next-line no-undef
 let key = process.env.JWT_KEY
 
-const seller = (req,res,next) =>{
-    let token
-        let auth = req.headers.authorization
-        token = auth.split(" ")[1]
-        let decode = jwt.verify(token,key)
-        let dataRole = decode.role
-        // console.log(dataRole);
-        if(dataRole !== 'seller'){
-            return response(res, null, 'failed', 404, 'Just Seller can process')
-        }
-        return next()
-}
-
-const user = (req,res,next) =>{
-    let token
-        let auth = req.headers.authorization
-        token = auth.split(" ")[1]
-        let decode = jwt.verify(token,key)
-        let dataRole = decode.role
-        console.log(dataRole);
-        if(dataRole !== 'user'){
-            return response(res, null, 'failed', 404, 'Just User can process')
-        }
-        return next()
-}
-
-const admin = (req,res,next) =>{
-    let token
-        let auth = req.headers.authorization
-        token = auth.split(" ")[1]
-        let decode = jwt.verify(token,key)
-        let dataRole = decode.role
-        console.log(dataRole);
-        if(dataRole !== 'admin'){
-            return response(res, null, 'failed', 404, 'Just admin can process')
-        }
-        return next()
-}
-
-const protect = (req,res,next) =>{
-    try{
+const protect = (req,res,next) => {
+    try {
         let token
         if(req.headers.authorization){
             let auth = req.headers.authorization
-            token = auth.split(" ")[1]
-            let decode = jwt.verify(token,key)
+            token = auth.split(' ')[1]
+            let decode = jwt.verify(token, key)
             req.payload = decode
             next()
         } else {
             return response(res, null, 'failed', 404, 'Server Need Token')
         }
-    } catch(err) {
-        console.log(err)
-        if(err && err.name == 'JsonWebTokenError'){
+    } catch (error) {
+        console.log(error)
+        if(error && error.name == 'JsonWebTokenError'){
             return response(res, null, 'failed', 404, 'Invalid Token')
-        } else if (err && err.name == 'TokenExpriredError'){
-            return response(res, null, 'failed', 404, 'Invalid Token')
+        } else if (error && error.name == 'TokenExpriredError'){
+            return response(res, null, 'failed', 404, 'Token Expired')
         } else {
             return response(res, null, 'failed', 404, 'Invalid Token')
         }
@@ -67,8 +28,18 @@ const protect = (req,res,next) =>{
 }
 
 module.exports = {
-    seller,
-    user,
-    protect,
-    admin
+    protect
 }
+
+// const user = (req,res,next) =>{
+//     let token
+//         let auth = req.headers.authorization
+//         token = auth.split(" ")[1]
+//         let decode = jwt.verify(token,key)
+//         let dataRole = decode.role
+//         console.log(dataRole);
+//         if(dataRole !== 'user'){
+//             return response(res, null, 'failed', 404, 'Just User can process')
+//         }
+//         return next()
+// }

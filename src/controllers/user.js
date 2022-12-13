@@ -8,10 +8,10 @@ const cloudinary = require('cloudinary').v2
 // const client = require('../configs/redis')
 
 cloudinary.config({ 
-  cloud_name: 'ddpo9zxts', 
-  api_key: '713177134711193', 
-  api_secret: 'LPrYJjwuotkDzsvBwCDlsUoIycw' 
-});
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.API_KEY, 
+    api_secret: process.env.API_SECRET
+  });
 
 
 exports.getData = async(req,res) =>{
@@ -23,103 +23,45 @@ exports.getData = async(req,res) =>{
     }
 }
 
-// exports.getData = (req,res,next) =>{
-//     userModel.getData()
-//     .then((result)=>{
-//         res.send({status: 200, message: 'get data success', data: result.rows})
-//     })
-//     .catch((error)=>{
-//         res.send({message: 'error', error})
-//     })
-// }
-
-// exports.insertData = (req, res) =>{
-//     const validateEmail = userModel.findByEmail()
-//     console.log(validateEmail);
-//     if(validateEmail){
-//         res.json({message: 'Email is already exist'})
-//     }
-//     const {name, email, role, password, phone, gender} = req.body
-//     let data = {
-//         id: uuidv4(),
-//         name,
-//         email,
-//         role,
-//         password,
-//         phone,
-//         gender
-//     }
-//     userModel.insertData(data)
-//     .then(()=>{
-//         res.send({status: 200, message: 'add data success'})
-//     })
-//     .catch((error)=>{
-//         res.send({message: 'error', error})
-//     })
-// }
-
-// exports.insertProduct = async(req,res) =>{
-//     try {
-//       const {name,brand,condition,description,stock,id_category,price} = req.body
-//       const photo = req.file
-//       const image = await cloudinary.uploader.upload(photo.path, { folder: 'Backend Blanja/products' })
-//       const data = {name,brand,condition,description,stock,id_category,price,photo: [image.secure_url]}
-//       await productModel.insertData(data)
-//       return commonHelper.response(res, data, 'sucess', 200, 'Add data sucess')
-//     } catch (error) {
-//       res.send({message: 'error', error})
-//     }
-//   }
-
 exports.insertData = async(req, res) =>{
-    try {
-        const {name, email, role, password, phone, gender} = req.body
-        const photo = req.file
-        // console.log(req.file);
-        const image = await cloudinary.uploader.upload(photo.path, { folder: 'Backend Blanja/user' })
-        // const data = { name, email, password, phone, gender, photo: [image.secure_url] }
-        const dataUser = await userModel.findByEmail(email)
-        const salt = bcrypt.genSaltSync(10);
-        const passwordHash = bcrypt.hashSync(password, salt);
-        // console.log(dataUser);
-        if(!dataUser.rowCount){
-            let data = {
-                id: uuidv4(),
-                name,
-                email,
-                role,
-                password: passwordHash,
-                phone,
-                gender,
-                photo: [image.secure_url]
-            }
-            await userModel.insertData(data)
-            // console.log(data);
-            res.send({status: 200, message: 'add data success'})
-        }else{
-            res.send({message: 'email is already exist'})
+        try {
+            const { name, email, role, password } = req.body
+            console.log(req.body);
+            // const image = await cloudinary.uploader.upload(photo.path, { folder: 'Recipes/User' })
+                const salt = bcrypt.genSaltSync(10);
+                const passwordHash = bcrypt.hashSync(password, salt);
+                const filterEmail = await userModel.findByEmail(email);
+                if(!filterEmail.rowCount){
+                    let dataUser = { id: uuidv4(), name, email, role, password: passwordHash }
+                    const {data} = await userModel.insertData(dataUser)
+                    commonHelper.response(res, data, 'success', 200, 'Insert Data Success')
+                }else{
+                    res.send({message: 'Email is Already Exist'})
+                }
+        } catch (error) {
+            console.log(error);
+            res.send({message: 'error'})
         }
-    } catch (error) {
-        console.log(error)
-        res.send({message: 'error'})
-    }
 }
 
-exports.login = async (req,res) => {
+exports.login = async(req,res) => {
     const {email, password} = req.body
+    console.log(req.body);
     const {rows: [dataUser]} = await userModel.findByEmail(email)
+    console.log(dataUser);
     if(!dataUser){
-        return commonHelper.response(res, null, 'failed', 403, 'login failed! wrong email or password')
+        return commonHelper.response(res, null, 'failed', 403, 'login failed! register')
     }
     // console.log(dataUser);
     const validationPassword = bcrypt.compareSync(password, dataUser.password)
     if(!validationPassword){
-        return commonHelper.response(res, null, 'failed', 403, 'login failed! wrong email or password')
+        return commonHelper.response(res, null, 'failed', 403, 'login failed! password doesn`t match')
     }
     let payload = {
+        id: dataUser.id,
         email: dataUser.email,
         password: dataUser.password,
-        role: dataUser.role
+        photo: dataUser.photo
     }
         dataUser.token = generateToken(payload)
         dataUser.refreshToken= generateRefreshToken(payload)

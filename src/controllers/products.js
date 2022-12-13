@@ -5,9 +5,9 @@ const cloudinary = require('cloudinary').v2
 // const client = require('../configs/redis')
 
 cloudinary.config({ 
-  cloud_name: 'ddpo9zxts', 
-  api_key: '713177134711193', 
-  api_secret: 'LPrYJjwuotkDzsvBwCDlsUoIycw' 
+  cloud_name: process.env.CLOUD_NAME, 
+  api_key: process.env.API_KEY, 
+  api_secret: process.env.API_SECRET
 });
 
     exports.getData = async(req,res,next) =>{
